@@ -1,0 +1,10 @@
+[
+    {
+        "arguments": [
+            "/usr/bin/g++", "-Wall", "-g", "-O2", "-c", "-std=c++20", "compiler", "main.cc"
+        ],
+        "directory": "/home/mingy/projects/std20c2",
+        "file": "/home/mingy/projects/std20c2/main.cc",
+        "output": "/home/mingy/projects/std20c2/compiler"
+    }
+]

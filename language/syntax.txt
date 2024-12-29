@@ -1,0 +1,31 @@
+start   ::= bstmts
+bstmts  ::= bstmt SEMICOLON bstmts
+        | $
+bstmt   ::= vardef
+        | expr
+        | IF LPAREN test RPAREN LPAREN bstmts RPAREN
+        | WHILE LPAREN test RPAREN LPAREN bstmts RPAREN
+vardef  ::= TYPE ID
+        | TYPE ID ASSIGN expr
+expr    ::= ID ASSIGN expr
+        | expr ADD term
+        | expr SUB term
+term    ::= factor
+        | term MUL factor
+        | term DIV factor
+factor  ::= ID
+        | NUM
+        | LPAREN exprt RPAREN
+        | factor LPAREN argsopt RPAREN
+        | factor PERIOD factor
+test    ::= expr NE expr
+        | expr LT expr
+        | expr LE expr
+        | expr GE expr
+        | expr GT expr
+        | expr EQ expr
+argsopt ::= args
+        | $
+args    ::= expr COMMA args
+        | expr
+        
