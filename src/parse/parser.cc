@@ -1,10 +1,5 @@
-#include "parser.hh"
-#include "chart.hh"
-#include <cassert>
-#include <iostream>
-#include <variant>
-#include <vector>
 #include "earley_algorithm.hh"
+#include <cassert>
 
 std::vector<Token> stripInput(const std::vector<Token> &input) {
     auto stripped = input;

@@ -1,5 +1,5 @@
-#ifndef LANGUAGE_H
-#define LANGUAGE_H
+#ifndef LANGUAGE_HH
+#define LANGUAGE_HH
 #include <variant>
 #include <vector>
 #include <regex>

@@ -1,6 +1,8 @@
-#ifndef EARLEY_ALGORITHM_H
-#define EARLEY_ALGORITHM_H
+#ifndef EARLEY_ALGORITHM_HH
+#define EARLEY_ALGORITHM_HH
 #include "chart.hh"
+#include "../error_message.hh"
+#include <optional>
 
 inline bool skipTokenPredicate(const Token& token) {
     return token.kind == Terminals::SPACE || token.kind == Terminals::COMMENT;

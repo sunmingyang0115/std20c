@@ -1,9 +1,7 @@
-#ifndef ERROR_MESSAGE_H
-#define ERROR_MESSAGE_H
-
-#include "language.hh"
+#ifndef ERROR_MESSAGE_HH
+#define ERROR_MESSAGE_HH
+#include <string>
 #include <cstddef>
-#include <vector>
 
 struct CompilerError {
     enum Type {

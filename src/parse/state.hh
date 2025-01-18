@@ -1,6 +1,5 @@
 #ifndef STATE_HH
 #define STATE_HH
-#include "parser.hh"
 #include "../language.hh"
 #include <set>
 

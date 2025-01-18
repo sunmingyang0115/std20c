@@ -1,5 +1,4 @@
 #include "tokenize.hh"
-#include <iostream>
 #include <optional>
 
 std::optional<Token> scanSingleToken(std::string::iterator &begin, const std::string::iterator &end) {

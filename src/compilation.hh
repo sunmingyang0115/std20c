@@ -1,8 +1,7 @@
-#ifndef COMPILER_H
-#define COMPILER_H
+#ifndef COMPILER_HH
+#define COMPILER_HH
 #include <map>
 #include <string>
-#include <variant>
 #include <vector>
 enum Type {
     String, Number, Entity, Vector, Void

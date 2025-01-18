@@ -1,6 +1,4 @@
 #include "earley_algorithm.hh"
-#include <iostream>
-#include <tuple>
 
 std::string nonTerminalToErrorString(NonTerminals nt) {
     switch (nt) {
