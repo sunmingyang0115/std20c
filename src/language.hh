@@ -92,10 +92,10 @@ const std::vector<ProductionRule> grammar {
     {PRE2, {PLUS, PRE2}},
     {PRE2, {EXCLAIM, PRE2}},
     {PRE2, {PRE1}},
+    {PRE2, {LITERAL}},  // literals cannot preform fn calls and member reference
+    {PRE1, {ID}},
     {PRE1, {PRE1, LPAREN, ARGSOPT, RPAREN}},
     {PRE1, {PRE1, PERIOD, PRE1}},
-    {PRE1, {ID}},
-    {PRE1, {LITERAL}},
     {ARGSOPT, {}},
     {ARGSOPT, {ARGS}},
     {ARGS, {EXPR}},

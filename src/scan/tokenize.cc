@@ -19,7 +19,7 @@ std::optional<Token> scanSingleToken(std::string::iterator &begin, const std::st
     return result;
 }
 
-std::vector<Token> maximalMunch(std::string s) {
+std::variant<CompilerError, std::vector<Token>> maximalMunch(std::string s) {
     std::vector<Token> v;
     std::string::iterator begin = s.begin();
     std::string::iterator end = s.end();
@@ -28,11 +28,7 @@ std::vector<Token> maximalMunch(std::string s) {
         if (result.has_value()) {
             v.push_back(result.value());
         } else {
-            std::cout << "Unrecognized syntax: \n";
-            for (; begin != end; begin++) {
-                std::cout << *begin;
-            }std::cout << std::endl;
-            throw std::terminate;
+            return CompilerError{CompilerError::Type::Scan, static_cast<size_t>(std::distance(s.begin(), begin)), 1, "Unrecognized Token"};
         }
     }
     return v;

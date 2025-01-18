@@ -1,3 +1,4 @@
+#include "error_message.hh"
 #include "language.hh"
 #include "scan/tokenize.hh"
 #include "parse/parser.hh"
@@ -6,6 +7,9 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <variant>
+#include <vector>
+#include "error_message.hh"
 
 std::ostream& operator<<(std::ostream& os, Terminals t) {
     switch (t) {
@@ -88,22 +92,19 @@ int main(int argc, char* argv[]) {
     }
     std::string s((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    auto v = maximalMunch(s);
+    auto scan = maximalMunch(s);
+    if (std::holds_alternative<CompilerError>(scan)) {
+        return generateMessage(s, std::get<CompilerError>(scan));
+    } 
+    auto tokens = std::get<std::vector<Token>>(scan);
+    // for (auto &e: tokens) {
+    //     std::cout << "{" << e.kind << ", " << e.lexeme << "}";   
+    // }
+    auto parse = earleyParser(tokens);
+    // if (auto *error = std::get_if())
     
-    v.erase(std::remove_if(v.begin(), v.end(), [](const Token& token) {
-        return token.kind == Terminals::SPACE || token.kind == Terminals::COMMENT;
-    }), v.end());
-    
-    for (auto &[a, b]: v) {
-        std::cout << a << " " << b << std::endl;
+    if (std::holds_alternative<CompilerError>(parse)) {
+        return generateMessage(s, std::get<CompilerError>(parse));
     }
-
-    auto t = earleyParser(v);
-    if (t.has_value()) {
-        printTree(std::cout, *t);
-        auto tbl = generateSymbolTable(*t);
-        if (tbl.has_value()) {
-            std::cout << "good\n";
-        }
-    }
+    printTree(std::cout, std::get<Tree>(parse));
 }

@@ -4,7 +4,8 @@
 #include <variant>
 #include <vector>
 #include "../language.hh"
+#include "../error_message.hh"
 
-std::optional<Tree> earleyParser(const std::vector<Token> &input);
+std::variant<CompilerError, Tree> earleyParser(const std::vector<Token> &input);
 
 #endif
