@@ -1,3 +1,4 @@
+#include "compilation.hh"
 #include "error_message.hh"
 #include "language.hh"
 #include "scan/tokenize.hh"
@@ -10,6 +11,7 @@
 #include <variant>
 #include <vector>
 #include "error_message.hh"
+// #include "codegen/code_generation.hh"
 
 std::ostream& operator<<(std::ostream& os, Terminals t) {
     switch (t) {
@@ -39,7 +41,8 @@ std::ostream& operator<<(std::ostream& os, Terminals t) {
         case SLASH: return os << "SLASH";
         case EXCLAIM: return os << "EXCLAIM";
         case PERIOD: return os << "PERIOD";
-        case LITERAL: return os << "LITERAL";
+        case NUMBER: return os << "NUMBER";
+        case STRING: return os << "STRING";
         case COMMA: return os << "COMMA";
         default: return os << "UNKNOWN";
     }
@@ -49,7 +52,8 @@ std::ostream& operator<<(std::ostream& os, NonTerminals nt) {
     switch (nt) {
         case START: return os << "START";
         case BSTMTS: return os << "BSTMTS";
-        case CONTROL: return os << "CONTROL";
+        case IFCONT: return os << "IFCONT";
+        case BLOCK: return os << "BLOCK";
         case BSTMT: return os << "BSTMT";
         case VARDEF: return os << "VARDEF";
         case EXPR: return os << "EXPR";
@@ -62,10 +66,22 @@ std::ostream& operator<<(std::ostream& os, NonTerminals nt) {
         case PRE3: return os << "PRE3";
         case PRE2: return os << "PRE2";
         case PRE1: return os << "PRE1";
+        case LITERAL: return os << "LITERAL";
         case ARGSOPT: return os << "ARGSOPT";
         case ARGS: return os << "ARGS";
         default: return os << "UNKNOWN";
     }
+}
+
+std::ostream& operator<<(std::ostream& os, Type t) {
+    switch (t) {
+        case STRING_TYPE: return os << "STRING_TYPE";
+        case NUMBER_TYPE: return os << "NUMBER_TYPE";
+        case ENTITY_TYPE: return os << "ENTITY_TYPE";
+        case VECTOR_TYPE: return os << "VECTOR_TYPE";
+        case VOID_TYPE: return os << "VOID_TYPE";
+        default: return os << "UNKNOWN_TYPE";
+        }
 }
 
 void printTree(std::ostream& o, const Tree &t, std::size_t depth = 0) {
@@ -73,7 +89,13 @@ void printTree(std::ostream& o, const Tree &t, std::size_t depth = 0) {
     if (std::holds_alternative<Token>(t)) {
         auto token = std::get<Token>(t);
 
-        o << indent << token.kind << " " << token.lexeme << "\n";
+        o << indent << token.kind << " ";
+        auto it = token.begin;
+        for (size_t i = 0; i < token.length; i++) {
+            o << *it;
+            it++;
+        }
+        o << "\n";
     } else if (std::holds_alternative<Branch>(t)) {
         const auto &branch = std::get<Branch>(t);
         o << indent << "(" << branch.nt << "\n";
@@ -98,7 +120,7 @@ int main(int argc, char* argv[]) {
     } 
     auto tokens = std::get<std::vector<Token>>(scan);
     // for (auto &e: tokens) {
-    //     std::cout << "{" << e.kind << ", " << e.lexeme << "}";   
+    //     std::cout << e.kind << " " << e.toString() << std::endl;
     // }
     auto parse = earleyParser(tokens);
     // if (auto *error = std::get_if())
@@ -106,5 +128,23 @@ int main(int argc, char* argv[]) {
     if (std::holds_alternative<CompilerError>(parse)) {
         return generateMessage(s, std::get<CompilerError>(parse));
     }
-    printTree(std::cout, std::get<Tree>(parse));
+    auto &t = std::get<Tree>(parse);
+    // printTree(std::cout, t);
+    auto table = generateSymbolTable(t);
+    if (std::holds_alternative<CompilerError>(table)) {
+        return generateMessage(s, std::get<CompilerError>(table));
+    }
+    auto semantics = std::get<SymbolTable>(table);
+
+    for (auto &[a, b]: semantics.tokenToVID) {
+        std::cout << a << " ::= " << b << "\n";
+    }
+    for (auto &[a, b]: semantics.vidToType) {
+        std::cout << a << " ::= " << b << "\n";
+    }
+    for (auto &[a, b]: semantics.funNameToType) {
+        std::cout << a << "\n";
+    }
+    
+    // std::cout << codeGeneration(std::get<Tree>(parse));
 }

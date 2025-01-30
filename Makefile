@@ -9,8 +9,12 @@ OBJ=\
 	build/parse/parser.o \
 	build/parse/generate_chart.o \
 	build/parse/generate_tree.o \
-	build/parse/generate_error.o
-	# build/analysis/semantics.o 
+	build/parse/generate_error.o \
+	build/analysis/semantics.o \
+	build/analysis/semantics_error.o \
+	build/analysis/scope.o
+	# build/codegen/code_generation.o
+	
 
 
 $(OUT): $(OBJ)

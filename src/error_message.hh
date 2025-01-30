@@ -4,16 +4,12 @@
 #include <cstddef>
 
 struct CompilerError {
-    enum Type {
-        Scan,
-        Parse,
-        Type,
-        Compile
-    } type;
-    size_t start;
-    size_t length;
+    enum Type { SCAN, PARSE, TYPE, COMPILE } type;
+    std::string::const_iterator errorPosition;
+    size_t errorLength;
     std::string errorMessage;
-    CompilerError(enum Type type, size_t start, size_t length, std::string errorMessage): type(type), start(start), length(length), errorMessage(errorMessage) {};
+    CompilerError(enum Type type, std::string::const_iterator errorPosition, size_t errorLength, std::string errorMessage): 
+        type(type), errorPosition(errorPosition), errorLength(errorLength), errorMessage(errorMessage) {}
 };
 
 // input => original; position

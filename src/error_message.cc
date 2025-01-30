@@ -27,12 +27,13 @@ std::pair<std::string::const_iterator, std::string::const_iterator> getSurroundi
     auto start = it;
     auto end = it + length;
     // Move start iterator back up to max_chars or until a newline is found
-    for (size_t i = 0; i < maxChars && start != contents.begin(); start--) {
-        if (*start == '\n') {
-            ++start;
+    for (size_t i = 0; i < maxChars; start--) {
+        if (*start == '\n' || start == contents.begin()) {
             break;
         }
     }
+    if (*start == '\n') start++;
+    
     // Move end iterator forward up to max_chars or until a newline is found
     for (size_t i = 0; i < maxChars && end != contents.end(); end++) {
         if (*end == '\n') {
@@ -43,16 +44,15 @@ std::pair<std::string::const_iterator, std::string::const_iterator> getSurroundi
 }
 
 int generateMessage(const std::string &contents, CompilerError error) {
-    auto errorStart = contents.begin() + error.start;
     auto errorType = [&]() {
         switch (error.type) {
-        case CompilerError::Scan:
+        case CompilerError::SCAN:
             return "scan error";
-        case CompilerError::Parse:
+        case CompilerError::PARSE:
             return "parse error";
-        case CompilerError::Type:
+        case CompilerError::TYPE:
             return "type error";
-        case CompilerError::Compile:
+        case CompilerError::COMPILE:
             return "compile error";
         default:
             return "unknown error";
@@ -60,21 +60,21 @@ int generateMessage(const std::string &contents, CompilerError error) {
     }();
 
     // find ln and col of contents
-    auto [ln, col] = getLnCol(contents, errorStart);
+    auto [ln, col] = getLnCol(contents, error.errorPosition);
     std::cerr << ln << ":" << col << ": " << BOLD_RED << errorType << ": " << DEFAULT << error.errorMessage << "\n";
 
-    auto [beginIt, endIt] = getSurroundings(contents, errorStart, error.length);
+    auto [beginIt, endIt] = getSurroundings(contents, error.errorPosition, error.errorLength);
 
     // clipped text on the sides of the error position
-    std::string beginContext(beginIt, errorStart);
-    std::string errorContext(errorStart, errorStart + error.length);
-    std::string endContext(std::string(errorStart + error.length, endIt));
+    std::string beginContext(beginIt, error.errorPosition);
+    std::string errorContext(error.errorPosition, error.errorPosition + error.errorLength);
+    std::string endContext(std::string(error.errorPosition + error.errorLength, endIt));
 
     std::string strLn = std::to_string(ln);
     size_t headerSize = std::max(strLn.size(), static_cast<size_t>(5));
-    std::cerr << std::setw(headerSize) << strLn;
+    std::cerr << std::setw(headerSize) << std::setfill(' ') << strLn;
     std::cerr << " | " << beginContext << BOLD_RED << errorContext << DEFAULT << endContext << "\n";
-    std::cerr << std::setw(headerSize) << "";
+    std::cerr << std::setw(headerSize) << std::setfill(' ') << "";
     std::cerr << " | " << std::setw(beginContext.size()) << "" << BOLD_RED << std::setw(errorContext.size()) << std::setfill('^') << "" << DEFAULT << "\n";
     return 1;
 }

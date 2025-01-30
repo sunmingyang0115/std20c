@@ -10,6 +10,6 @@ inline bool skipTokenPredicate(const Token& token) {
 
 Chart generateEarleyChart(const std::vector<Token> &strippedInput);
 std::optional<Tree> generateParseTree(const std::vector<Token> &strippedInput, const State &state);
-CompilerError generateParseError(const State &lastValidState, const std::vector<Token> &originalInput);
+CompilerError generateParseError(const State &lastValidState, const std::vector<Token> &strippedInput);
 
 #endif

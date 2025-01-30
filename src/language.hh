@@ -1,14 +1,16 @@
 #ifndef LANGUAGE_HH
 #define LANGUAGE_HH
+#include <cstddef>
+#include <initializer_list>
 #include <variant>
 #include <vector>
 #include <regex>
 
 enum Terminals {
-    SPACE, COMMENT, SEMICOLON, IF, LPAREN, RPAREN, LBPAREN, RBPAREN, WHILE, TYPE, ID, ASSIGN, LOR, LAND, EQ, NE, LE, LT, GE, GT, PLUS, MINUS, STAR, SLASH, EXCLAIM, PERIOD, LITERAL, COMMA
+    SPACE, COMMENT, SEMICOLON, IF, ELSE, LPAREN, RPAREN, LBPAREN, RBPAREN, WHILE, TYPE, ID, ASSIGN, LOR, LAND, EQ, NE, LE, LT, GE, GT, PLUS, MINUS, STAR, SLASH, EXCLAIM, PERIOD, NUMBER, STRING, COMMA
 };
 enum NonTerminals {
-    START, BSTMTS, BSTMT, CONTROL, VARDEF, EXPR, PRE14, PRE12, PRE11, PRE7, PRE6, PRE4, PRE3, PRE2, PRE1, ARGSOPT, ARGS
+    START, BSTMTS, BSTMT, BLOCK, IFCONT, VARDEF, EXPR, PRE14, PRE12, PRE11, PRE7, PRE6, PRE4, PRE3, PRE2, PRE1, ARGSOPT, ARGS, LITERAL
 };
 struct ProductionRule {
     NonTerminals lhs;
@@ -20,23 +22,29 @@ struct KindToRegex {
     KindToRegex(Terminals kind, std::string regex): kind(kind), regex(regex) {}
 };
 struct Token {
-    std::string lexeme;
+    std::string::const_iterator begin;
+    std::size_t length; // length of the lexeme
     Terminals kind;
-    Token(std::string lexeme, Terminals kind): lexeme(lexeme), kind(kind) {}
+    Token(std::string::const_iterator begin, std::size_t length, Terminals kind): begin(begin), length(length), kind(kind) {}
+    std::string toString() const {
+        return std::string(begin, begin + length);
+    }
 };
 const std::vector<KindToRegex> tokenizationRules {
     {SPACE, "^\\s+"},
     {COMMENT, "^\\/\\/.+"},
     {SEMICOLON, "^;"},
     {IF, "^if"},
+    {ELSE, "^else"},
     {LPAREN, "^\\("},
     {RPAREN, "^\\)"},
     {LBPAREN, "^\\{"},
     {RBPAREN, "^\\}"},
     {WHILE, "^while"},
     {TYPE, "(^Entity)|(^Number)|(^Vector)|(^String)"},
-    {LITERAL, "^[-+]?\\d+(\\.\\d+)?"},
-    {ID, "^\\w+"},
+    {NUMBER, "^[-+]?\\d+(\\.\\d+)?"},
+    {STRING, "^\".*\""},
+    {ID, "^[a-zA-Z_][a-zA-Z0-9_]*"},
     {ASSIGN, "^="},
     {LOR, "^\\|\\|"},
     {LAND, "^\\&\\&"},
@@ -52,19 +60,21 @@ const std::vector<KindToRegex> tokenizationRules {
     {SLASH, "^\\/"},
     {EXCLAIM, "^!"},
     {PERIOD, "^\\."},
-    
-    {COMMA, "^\\/\\/.+"}
+    {COMMA, "^\\,"}
 };
 
 const std::vector<ProductionRule> grammar {
     {START, {BSTMTS}},
-    {BSTMTS, {BSTMTS, BSTMT, SEMICOLON}},
-    {BSTMTS, {BSTMTS, CONTROL}},
+    {BSTMTS, {BSTMTS, BSTMT}},
     {BSTMTS, {}},
-    {BSTMT, {VARDEF}},
-    {BSTMT, {EXPR}},
-    {CONTROL, {IF, LPAREN, EXPR, RPAREN, LBPAREN, BSTMTS, RBPAREN}},
-    {CONTROL, {WHILE, LPAREN, EXPR, RPAREN, LBPAREN, BSTMTS, RBPAREN}},
+    {BSTMT, {VARDEF, SEMICOLON}},
+    {BSTMT, {EXPR, SEMICOLON}},
+    {BSTMT, {BLOCK}},
+    {BSTMT, {IF, LPAREN, EXPR, RPAREN, BSTMT, IFCONT}},
+    {BSTMT, {WHILE, LPAREN, EXPR, RPAREN, BSTMT}},
+    {BLOCK, {LBPAREN, BSTMTS, RBPAREN}},
+    {IFCONT, {ELSE, BSTMT}},
+    {IFCONT, {}},
     {VARDEF, {TYPE, ID}},
     {VARDEF, {TYPE, ID, ASSIGN, EXPR}},
     {EXPR, {PRE14}},
@@ -88,14 +98,17 @@ const std::vector<ProductionRule> grammar {
     {PRE3, {PRE3, STAR, PRE2}},
     {PRE3, {PRE3, SLASH, PRE2}},
     {PRE3, {PRE2}},
+    {PRE2, {LPAREN, EXPR, RPAREN}},
     {PRE2, {MINUS, PRE2}},
     {PRE2, {PLUS, PRE2}},
     {PRE2, {EXCLAIM, PRE2}},
     {PRE2, {PRE1}},
     {PRE2, {LITERAL}},  // literals cannot preform fn calls and member reference
+    {LITERAL, {STRING}},
+    {LITERAL, {NUMBER}},
     {PRE1, {ID}},
-    {PRE1, {PRE1, LPAREN, ARGSOPT, RPAREN}},
-    {PRE1, {PRE1, PERIOD, PRE1}},
+    {PRE1, {ID, LPAREN, ARGSOPT, RPAREN}},    // no closures, so [0] = ID instead of PRE1
+    // {PRE1, {PRE1, PERIOD, PRE1}},    add this later
     {ARGSOPT, {}},
     {ARGSOPT, {ARGS}},
     {ARGS, {EXPR}},

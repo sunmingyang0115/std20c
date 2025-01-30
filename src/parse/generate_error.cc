@@ -1,11 +1,13 @@
 #include "earley_algorithm.hh"
+#include <iostream>
+#include <tuple>
 
 std::string nonTerminalToErrorString(NonTerminals nt) {
     switch (nt) {
     case START: return "start";
     case BSTMTS: return "statements";
     case BSTMT: return "statement";
-    case CONTROL: return "control";
+    case IFCONT: return "if continuation";
     case VARDEF: return "variable definition";
     case EXPR: return "expression";
     case PRE14: return "expression";
@@ -19,6 +21,7 @@ std::string nonTerminalToErrorString(NonTerminals nt) {
     case PRE1: return "variable id";
     case ARGSOPT: return "arguments";
     case ARGS: return "arguments";
+    case LITERAL: return "literal";
     default: return "unknown non-terminal";
     }
 }
@@ -51,47 +54,38 @@ std::string terminalToErrorString(Terminals t) {
         case SLASH: return "division";
         case EXCLAIM: return "exclamation";
         case PERIOD: return "period";
-        case LITERAL: return "literal";
+        case STRING: return "string literal";
+        case NUMBER: return "number literal";
         case COMMA: return "comma";
+        case ELSE: return "else";
         default: return "unknown terminal";
     }
 }
 
-CompilerError generateParseError(const State &lastValidState, const std::vector<Token> &originalInput) {
-    auto [stringPos, stringLength] = [&](size_t strippedTokenPos) {
-        // first convert strippedTokenPos to tokenPos
-        size_t tokenPos = 0;
-        size_t i = 0;
-        for (auto &token: originalInput) {
-            
-            if (!skipTokenPredicate(token)) {
-                if (i == strippedTokenPos) {
-                    break;
-                }
-                i++;
-            }
-            tokenPos++;
-        }
-        size_t stringPos = 0;
-        // now we convert tokenPos to stringPos
-        for (size_t i = 0; i < tokenPos; i++) {
-            stringPos += originalInput[i].lexeme.size();
-        }
-        // std::cerr << strippedTokenPos << " " << tokenPos << " " << stringPos << "\n";
-        return std::make_tuple(stringPos, originalInput[tokenPos].lexeme.size());
-    }(lastValidState.right);
-    auto msg = [&]() -> std::string {
-        if (lastValidState.p.rhs.size() == lastValidState.dot) {
-            return "Unidentified token after " + nonTerminalToErrorString(lastValidState.p.lhs);
+CompilerError generateParseError(const State &incompleteState, const std::vector<Token> &strippedInput) {
+    
+    // handles edge case
+    auto contextAndBadToken = [&]() -> std::tuple<std::string, Token> {
+        if (strippedInput.size() == incompleteState.right) {
+            return std::make_tuple("after", std::cref(strippedInput.at(incompleteState.right-1)));
         } else {
-            auto &e = lastValidState.p.rhs[lastValidState.dot];
+            return std::make_tuple("before", std::cref(strippedInput.at(incompleteState.right)));
+        }
+    }();
+    auto [context, badToken] = contextAndBadToken;
+
+    auto msg = [&]() -> std::string {
+        if (incompleteState.p.rhs.size() == incompleteState.dot) {
+            return "Unidentified token " + context + " " + nonTerminalToErrorString(incompleteState.p.lhs);
+        } else {
+            auto &e = incompleteState.p.rhs.at(incompleteState.dot);
             if (std::holds_alternative<Terminals>(e)) {
-                return "Unexpected token: Expected " + terminalToErrorString(std::get<Terminals>(e)) + " symbol or something similar";
+                return "Unexpected token: Expected " + terminalToErrorString(std::get<Terminals>(e)) + " or something similar " + context + " token";
             } else {
-                return "Unexpected token: Expected " + nonTerminalToErrorString(std::get<NonTerminals>(e)) + " or something similar";
+                return "Unexpected token: Expected " + nonTerminalToErrorString(std::get<NonTerminals>(e)) + " or something similar " + context + " token";
             }
         }
     }();
-    return CompilerError(CompilerError::Type::Parse, stringPos, stringLength, msg);
+    return CompilerError(CompilerError::Type::PARSE, badToken.begin, badToken.length, msg);
             
 }

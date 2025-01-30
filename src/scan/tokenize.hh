@@ -3,6 +3,6 @@
 #include "../language.hh"
 #include "../error_message.hh"
 
-std::variant<CompilerError, std::vector<Token>> maximalMunch(std::string s);
+std::variant<CompilerError, std::vector<Token>> maximalMunch(const std::string &s);
 
 #endif
