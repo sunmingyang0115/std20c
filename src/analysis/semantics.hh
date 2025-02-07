@@ -5,7 +5,7 @@
 #include "../language.hh"
 #include <vector>
 
-std::variant<CompilerError, SymbolTable> generateSymbolTable(Tree t);
+std::variant<CompilerError, SymbolTable> generateSymbolTable(const Tree &t);
 
 // function call wrong number/types of arguments
 CompilerError invalidArgumentError(const Token &id, const std::vector<Type> &expected, const std::vector<Type> &obtained);

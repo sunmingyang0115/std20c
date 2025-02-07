@@ -10,6 +10,13 @@ The following types are used to define variables:
 
 This language is statically typed, meaning types in this language are not interchangable (i.e. variables can only be assigned values same to it's respective type).
 
+## Literals
+There are only two literals in this language, one for `Number` and one for `String`.
+
+`Number` literals can be created with a digit sequence. Decimal seperator is supported.
+
+`String` literals can be created by writing a sequences of non-newline ascii characters enclosed by a double quotation mark.
+
 ## Variable
 Variables identifiers in this language are abstractions that denote a storage location, and can be referenced in later areas of the code.
 
@@ -97,8 +104,8 @@ The functions are named the same way as the instructions in std20 assembly, and 
 - `Number vz(Vector a);`
 - `Vector vadd(Vector a, Vector b);`
 - `Vector vsub(Vector a, Vector b);`
-- `Vector vmul(Vector a, Vector b);`
-- `Vector vdiv(Vector a, Vector b);`
+- `Vector vmul(Vector a, Number b);`
+- `Vector vdiv(Vector a, Number b);`
 - `Number vdist(Vector a);`
 - `Vector vnorm(Vector a);`
 - `Number vdot(Vector a, Vector b);`

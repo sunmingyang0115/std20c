@@ -12,8 +12,9 @@ OBJ=\
 	build/parse/generate_error.o \
 	build/analysis/semantics.o \
 	build/analysis/semantics_error.o \
-	build/analysis/scope.o
-	# build/codegen/code_generation.o
+	build/analysis/scope.o \
+	build/codegen/lower.o \
+	build/optimization/optimizer.o
 	
 
 

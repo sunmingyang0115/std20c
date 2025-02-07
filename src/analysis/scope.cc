@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-std::optional<SymbolTable::VariableID> VariableScopeContext::searchAllScopes(std::string varName) {
+std::optional<VariableID> VariableScopeContext::searchAllScopes(std::string varName) {
     // std::cerr << "123\n";
     for (auto it = this->scopes.rbegin(); it != this->scopes.rend(); ++it) {
         auto varID = it->find(varName);
@@ -14,7 +14,7 @@ std::optional<SymbolTable::VariableID> VariableScopeContext::searchAllScopes(std
     return std::nullopt;
 }
 
-SymbolTable::VariableID VariableScopeContext::defineVariableInScope(std::string varName) {
+VariableID VariableScopeContext::defineVariableInScope(std::string varName) {
     this->scopes.back().emplace(varName, this->idCounter);
     return this->idCounter++;
 }

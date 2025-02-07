@@ -42,7 +42,7 @@ const std::vector<KindToRegex> tokenizationRules {
     {RBPAREN, "^\\}"},
     {WHILE, "^while"},
     {TYPE, "(^Entity)|(^Number)|(^Vector)|(^String)"},
-    {NUMBER, "^[-+]?\\d+(\\.\\d+)?"},
+    {NUMBER, "^\\d+(\\.\\d+)?"},
     {STRING, "^\".*\""},
     {ID, "^[a-zA-Z_][a-zA-Z0-9_]*"},
     {ASSIGN, "^="},
