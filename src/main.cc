@@ -113,7 +113,7 @@ std::ostream& operator<<(std::ostream &os, const IR &ir) {
                     os << "$" << vreg << " ";
                 } else {
                     auto &str = std::get<std::string>(rhs_e);
-                    std::cout << str << " ";
+                    os << str << " ";
                 }
             }
             os << "\n";

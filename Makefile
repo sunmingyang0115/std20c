@@ -1,7 +1,7 @@
 
-CC=g++ -Wall -g -O2
+CC=g++ -Wall -std=c++17 -O2
 
-OUT=compiler
+OUT=std20c
 OBJ=\
     build/main.o \
 	build/error_message.o \
@@ -13,8 +13,7 @@ OBJ=\
 	build/analysis/semantics.o \
 	build/analysis/semantics_error.o \
 	build/analysis/scope.o \
-	build/codegen/lower.o \
-	build/optimization/optimizer.o
+	build/codegen/lower.o
 	
 
 
