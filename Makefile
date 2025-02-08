@@ -1,11 +1,14 @@
 
-CC=g++ -Wall -std=c++17 -O2
+CXX=g++
+CXXFLAGS=-Wall -std=c++17 -O2
+CPPFLAGS=-Iinclude
 
 OUT=std20c
 OBJ=\
     build/main.o \
 	build/error_message.o \
 	build/scan/tokenize.o \
+	build/debug.o \
 	build/parse/parser.o \
 	build/parse/generate_chart.o \
 	build/parse/generate_tree.o \
@@ -15,13 +18,11 @@ OBJ=\
 	build/analysis/scope.o \
 	build/codegen/lower.o
 	
-
-
 $(OUT): $(OBJ)
-	$(CC) $^ -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $^ -o $@
 build/%.o: src/%.cc
 	@mkdir -p $(@D)
-	$(CC) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
 
 .PHONY: clean sysheader
 

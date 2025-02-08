@@ -1,4 +1,4 @@
-#include "error_message.hh"
+#include <std20c/error_message.hh>
 #include <algorithm>
 #include <cstddef>
 #include <iomanip>
@@ -43,7 +43,7 @@ std::pair<std::string::const_iterator, std::string::const_iterator> getSurroundi
     return std::make_pair(start, end);
 }
 
-int generateMessage(const std::string &contents, CompilerError error) {
+int generateErrorMessage(const std::string &contents, CompilerError error) {
     auto errorType = [&]() {
         switch (error.type) {
         case CompilerError::SCAN:

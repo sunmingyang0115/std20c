@@ -1,10 +1,18 @@
 [
-    {
-        "arguments": [
-            "/usr/bin/g++", "-Wall", "-g", "-O2", "-c", "-std=c++20", "compiler", "main.cc"
-        ],
-        "directory": "/home/mingy/projects/std20c2",
-        "file": "/home/mingy/projects/std20c2/main.cc",
-        "output": "/home/mingy/projects/std20c2/compiler"
-    }
+  {
+    "arguments": [
+      "/usr/bin/g++",
+      "-Wall",
+      "-std=c++17",
+      "-O2",
+      "-Iinclude",
+      "-c",
+      "-o",
+      "build/error_message.o",
+      "src/error_message.cc"
+    ],
+    "directory": "/home/mingy/projects/std20c2",
+    "file": "/home/mingy/projects/std20c2/src/error_message.cc",
+    "output": "/home/mingy/projects/std20c2/build/error_message.o"
+  }
 ]

@@ -1,10 +1,6 @@
 #include "scope.hh"
-#include <deque>
-#include <iostream>
-#include <vector>
 
 std::optional<VariableID> VariableScopeContext::searchAllScopes(std::string varName) {
-    // std::cerr << "123\n";
     for (auto it = this->scopes.rbegin(); it != this->scopes.rend(); ++it) {
         auto varID = it->find(varName);
         if (varID != it->end()) {

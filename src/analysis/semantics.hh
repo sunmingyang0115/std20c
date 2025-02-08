@@ -1,8 +1,8 @@
 #ifndef SEMANTICS_HH
 #define SEMANTICS_HH
-#include "../compilation.hh"
-#include "../error_message.hh"
-#include "../language.hh"
+#include <std20c/compilation.hh>
+#include <std20c/error_message.hh>
+#include <std20c/language.hh>
 #include <vector>
 
 std::variant<CompilerError, SymbolTable> generateSymbolTable(const Tree &t);

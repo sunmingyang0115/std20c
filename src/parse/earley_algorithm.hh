@@ -1,7 +1,7 @@
 #ifndef EARLEY_ALGORITHM_HH
 #define EARLEY_ALGORITHM_HH
 #include "chart.hh"
-#include "../error_message.hh"
+#include <std20c/error_message.hh>
 #include <optional>
 
 inline bool skipTokenPredicate(const Token& token) {

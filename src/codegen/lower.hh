@@ -1,8 +1,8 @@
 #ifndef LOWER_HH
 #define LOWER_HH
-#include "../compilation.hh"
-#include "../language.hh"
-#include "../ir.hh"
+#include <std20c/compilation.hh>
+#include <std20c/language.hh>
+#include <std20c/ir.hh>
 
 IR generateIR(const SymbolTable &, const Tree &);
 

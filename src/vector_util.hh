@@ -2,6 +2,7 @@
 #define VECTOR_UTIL
 #include <vector>
 #include <tuple>
+#include <cassert>
 namespace {
     template<std::size_t N, typename T, std::size_t... I>
     auto vectorViewImpl(std::vector<T> &vec, std::index_sequence<I...>) {

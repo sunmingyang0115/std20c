@@ -32,16 +32,5 @@ std::variant<CompilerError, Tree> earleyParser(const std::vector<Token> &origina
             }
         }
     }
-
-    // return generateParseError(lastValidState, strippedInput);
-    // for (int trace = strippedInput.size(); trace >= 0; trace--) {
-    //     for (int i = S[trace].size()-1; i >= 0; i--) {
-    //         auto &state = S[trace][i];
-    //         auto it = std::find_if(state.backpointer.begin(), state.backpointer.end(), [&](const typename State::BackPointer &bp) { return bp.state == lastValidState; });
-    //         if (it != state.backpointer.end()) {
-    //             return generateParseError(state, strippedInput);
-    //         }
-    //     }
-    // }
     assert(false && "This should never be reached, implementation is incorrect.");    
 }

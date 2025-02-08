@@ -1,6 +1,6 @@
 #ifndef STATE_HH
 #define STATE_HH
-#include "../language.hh"
+#include <std20c/language.hh>
 #include <set>
 
 struct State {

@@ -13,6 +13,6 @@ struct CompilerError {
 };
 
 // input => original; position
-int generateMessage(const std::string &contents, CompilerError error);
+int generateErrorMessage(const std::string &contents, CompilerError error);
 
 #endif

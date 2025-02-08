@@ -1,9 +1,4 @@
 #include "lower.hh"
-#include <cassert>
-#include <initializer_list>
-#include <iostream>
-#include <string>
-#include <variant>
 #include "../vector_util.hh"
 
 std::string generateUniqueLabel() {

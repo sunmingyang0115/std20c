@@ -1,11 +1,6 @@
 #include "semantics.hh"
-#include <cassert>
 #include "../vector_util.hh"
 #include "scope.hh"
-#include <iostream>
-#include <optional>
-#include <stdexcept>
-#include <variant>
 
 Type tokenToType(Token t) {
     auto s = t.toString();
@@ -375,8 +370,8 @@ std::optional<Type> genStart(SemanticState &state, const Tree &t) {
 void initState(SemanticState &state) {
     state.context.enterScope();
     state.symbolTable.vidToType = {
-        {state.context.defineVariableInScope("TARGET"), Type::ENTITY_TYPE},
-        {state.context.defineVariableInScope("SELF"), Type::ENTITY_TYPE}
+        {state.context.defineVariableInScope("SELF"), Type::ENTITY_TYPE},   // $0
+        {state.context.defineVariableInScope("TARGET"), Type::ENTITY_TYPE}  // $1
     };
     state.symbolTable.funNameToType = {
         {"round", {{Type::NUMBER_TYPE}, Type::NUMBER_TYPE}},

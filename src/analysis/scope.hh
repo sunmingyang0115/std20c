@@ -1,9 +1,8 @@
 #ifndef SCOPE_HH
 #define SCOPE_HH
-#include "../compilation.hh"
+#include <std20c/compilation.hh>
 #include <deque>
 #include <optional>
-#include <vector>
 
 // data structure used to create a symbol table by mapping variable names in scopes to VariableID
 struct VariableScopeContext {
