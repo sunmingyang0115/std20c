@@ -1,6 +1,7 @@
 #include "semantics.hh"
 #include "../vector_util.hh"
 #include "scope.hh"
+#include <iostream>
 
 Type tokenToType(Token t) {
     auto s = t.toString();
@@ -33,10 +34,11 @@ bool genArgs(SemanticState &state, const Tree &t, std::vector<Type>& types) {
     } else if (branch.subtrees.size() == 3) {
         auto [expr, _, args] = vectorView<3>(branch.subtrees);
         if (auto type = genExpr(state, expr)) {
-            if (!type.has_value()) return false;
             types.push_back(*type);
+            return genArgs(state, args, types);
         }
-        return genArgs(state, args, types);
+        return false;
+        
     } else {
         assert((false));
     }

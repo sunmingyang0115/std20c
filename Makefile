@@ -1,6 +1,6 @@
 
 CXX=g++
-CXXFLAGS=-Wall -std=c++17 -O2
+CXXFLAGS=-Wall -g -std=c++17 -O2
 CPPFLAGS=-Iinclude
 
 OUT=std20c

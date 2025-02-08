@@ -123,6 +123,11 @@ The functions are named the same way as the instructions in std20 assembly, and 
 - `String sifyd(Object x);`
 - `Void print(Object a);`
 ### World functions
+- `Entity findent(Vector pos, Number n);`
+- `Vector entpos(Entity ent);`
+- `Vector entvel(Entity ent);`
+- `Vector entfacing(Entity ent);`
+- `Vector checkblock(Vector pos, String block);`
 - `Void accelent(Entity ent, Velocity vel);`
 - `Void damageent(Entity ent, Number dmg);`
 - `Void mountent(Entity bottom, Entity top);`
