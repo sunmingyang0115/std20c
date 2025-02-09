@@ -1,6 +1,7 @@
 #include <std20c/compilation.hh>
 #include <std20c/error_message.hh>
 #include <std20c/language.hh>
+#include "optimization/optimizer.hh"
 #include "scan/tokenize.hh"
 #include "parse/parser.hh"
 #include "analysis/semantics.hh"
@@ -15,7 +16,7 @@
 #include <variant>
 #include <vector>
 
-std::variant<IR, CompilerError> compile(const std::string &code) {
+std::variant<IR, CompilerError> compile(const std::string &code, size_t optimize) {
     auto tryScan = maximalMunch(code);
     if (std::holds_alternative<CompilerError>(tryScan)) {
         return std::get<CompilerError>(tryScan);
@@ -31,25 +32,42 @@ std::variant<IR, CompilerError> compile(const std::string &code) {
     }
     auto tryCodeGen = generateIR(std::get<SymbolTable>(tryAnalyze), parseTree);
     // in current implementation, generateIR is no fail
+
+    if (optimize) {
+        std::cout << "Note: optimization is still experimental (i.e. conditional statements do not work)" << std::endl;
+        return optimizer(tryCodeGen);
+    }
     return tryCodeGen;
 } 
 
 int main(int argc, char* argv[]) {
     std::string executable = argv[0];
-    std::string outfile = "a.out";
+
     std::optional<std::string> infile;
+    std::string outfile = "a.out";
+
+    size_t optimize = 0;
+    
+
     for (int i = 1; i < argc; i++) {
-        if (!std::strcmp(argv[i], "-o")) {
+        std::string str = argv[i];
+        if (str == "-O0") {
+            optimize = 0;
+        } else if (str == "-O1") {
+            optimize = 1;
+        } else if (str == "-O2") {
+            optimize = 2;
+        } else if (str == "-o") {
             if (i+1 < argc) {
                 outfile = argv[++i];
             } else {
-                std::cerr << executable << ": missing filename after `" << argv[i] << "`\n";
+                std::cerr << executable << ": missing filename after `" << str << "`\n";
                 return 1;
             }
-        } else if (!infile.has_value()) {
-            infile = argv[i];
+        } else if (!infile.has_value() && str.find('.') != std::string::npos) {
+            infile = str;
         } else {
-            std::cerr << executable << ": unrecognized command-line option `" << argv[i] << "`\n";
+            std::cerr << executable << ": unrecognized command-line option `" << str << "`\n";
             return 1;
         }
     }
@@ -58,14 +76,14 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    std::ifstream file(argv[1]);
+    std::ifstream file(*infile);
     if (!file) {
-        std::cerr << executable << ": cannot find " << argv[1] << ": No such file or directory\n";
+        std::cerr << executable << ": cannot find " << *infile << ": No such file or directory\n";
         return 1;
     }
     std::string contents((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    auto tryCompile = compile(contents);
+    auto tryCompile = compile(contents, optimize);
     if (std::holds_alternative<CompilerError>(tryCompile)) {
         return generateErrorMessage(contents, std::get<CompilerError>(tryCompile));
     }

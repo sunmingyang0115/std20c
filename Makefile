@@ -16,7 +16,11 @@ OBJ=\
 	build/analysis/semantics.o \
 	build/analysis/semantics_error.o \
 	build/analysis/scope.o \
-	build/codegen/lower.o
+	build/codegen/lower.o \
+	build/optimization/lifetime.o \
+	build/optimization/optimizer.o \
+	build/optimization/linearscan.o \
+
 	
 $(OUT): $(OBJ)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $^ -o $@

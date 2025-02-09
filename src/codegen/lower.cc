@@ -59,14 +59,20 @@ VReg genPre1(LoweringState &state, const Tree &t) {
         auto [id, _1, args, _2] = vectorView<4>(branch.subtrees);
 
         auto idAsStr = std::get<Token>(id).toString();
-        auto retReg = state.generateNewReg();
 
         std::vector<std::variant<VReg, std::string>> list{idAsStr};
         for (auto e: genArgsOpt(state, args)) {
             list.push_back(e);
         }
-        state.ir.instructions.push_back(GenericWriteInstruction(retReg, std::move(list)));
-        return retReg;
+
+        if (state.sym.funNameToType.find(idAsStr)->second.ret != Type::VOID_TYPE) {
+            auto retReg = state.generateNewReg();
+            state.ir.instructions.push_back(GenericWriteInstruction(retReg, std::move(list)));
+            return retReg;
+        } else {
+            state.ir.instructions.push_back(GenericReadInstruction(std::move(list)));
+            return -1;
+        }
     }
     assert((false));
 }

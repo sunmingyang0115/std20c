@@ -1,6 +1,6 @@
 #ifndef DEBUG_HH
 #define DEBUG_HH
-#include <ostream>
+#include <iostream>
 #include <std20c/ir.hh>
 #include <std20c/compilation.hh>
 #include <std20c/language.hh>

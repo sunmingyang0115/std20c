@@ -71,7 +71,8 @@ CompilerError generateParseError(const State &incompleteState, const std::vector
             return std::make_tuple("before", std::cref(strippedInput.at(incompleteState.right)));
         }
     }();
-    auto [context, badToken] = contextAndBadToken;
+    std::string context = std::get<0>(contextAndBadToken);
+    Token badToken = std::get<1>(contextAndBadToken);
 
     auto msg = [&]() -> std::string {
         if (incompleteState.p.rhs.size() == incompleteState.dot) {
