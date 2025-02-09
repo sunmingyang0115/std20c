@@ -1,5 +1,4 @@
-# std20c lang Overview
-A C-like language used to compile to https://github.com/dthusian/spells-mod.
+# std20c language Overview
 
 ## Types
 The following types are used to define variables:
@@ -17,7 +16,7 @@ There are only two literals in this language, one for `Number` and one for `Stri
 
 `String` literals can be created by writing a sequences of non-newline ascii characters enclosed by a double quotation mark.
 
-## Variable
+## Variables
 Variables identifiers in this language are abstractions that denote a storage location, and can be referenced in later areas of the code.
 
 ### Global Variables
