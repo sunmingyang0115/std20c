@@ -20,6 +20,9 @@ There are only two literals in this language, one for `Number` and one for `Stri
 ## Variable
 Variables identifiers in this language are abstractions that denote a storage location, and can be referenced in later areas of the code.
 
+### Global Variables
+The library provides two predefined variables: `SELF` and `TARGET`, which reflect std20's slot 0 and slot 1 respectively.
+
 ### Declaring Variables
 Variables cannot be accessed or written to before variable declaration.
 
